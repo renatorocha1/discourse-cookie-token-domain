@@ -7,7 +7,7 @@ class ExCurrentUserProvider < Auth::DefaultCurrentUserProvider
     require 'openssl' if !defined?(OpenSSL)
     require 'base64' if !defined?(Base64)
 
-    payload = { username: user.username, user_id: user.id, avatar: user.avatar_template, group: user.title }
+    payload = { email: user.email, username: user.username, user_id: user.id, avatar: user.avatar_template, group: user.title }
     payload_sha = Digest::SHA256.hexdigest payload.to_json
     hash_function = OpenSSL::Digest.new('sha256')
     hmac = OpenSSL::HMAC.hexdigest(hash_function, SiteSetting.cookie_ui_key, payload_sha)
