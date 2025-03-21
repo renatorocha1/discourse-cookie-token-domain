@@ -11,6 +11,7 @@ The cookie contains basic information about a user and a hmac
 Cookie content is encode in base64. After decode64 you will have :
 ```
 {
+    "email":"test@test.com",
     "username":"CapitaineJohn",
     "user_id":2,"avatar":"/user_avatar/forum.example.com/bonclay/{size}/117_1.png",
     "group":"[VIP]",
@@ -53,6 +54,7 @@ $cookie = urldecode($cookie);
 $user_infos = json_decode($cookie);
 
 $array_hash = array(
+    'email' => $user_infos->email,
     'username' => $user_infos->username,
     'user_id' => $user_infos->user_id,
     'avatar' => $user_infos->avatar,
@@ -82,6 +84,7 @@ const uriDecodedPayload = decodeURIComponent(valueOfLoggedInCookie);
 const base64DecodedBuffer = Buffer.from(uriDecodedPayload, 'base64');
 const preJsonPayload = JSON.parse(base64DecodedBuffer.toString());
 const jsonPayload = {
+  email: preJsonPayload.email,
   username: preJsonPayload.username,
   user_id: preJsonPayload.user_id,
   avatar: preJsonPayload.avatar,
