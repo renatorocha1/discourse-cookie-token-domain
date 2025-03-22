@@ -7,7 +7,19 @@ class ExCurrentUserProvider < Auth::DefaultCurrentUserProvider
     require 'openssl' if !defined?(OpenSSL)
     require 'base64' if !defined?(Base64)
 
-    payload = { email: user.email, username: user.username, user_id: user.id, avatar: user.avatar_template, group: user.title }
+    firstname = user.custom_fields["first_name"] || ""
+    lastname = user.custom_fields["last_name"] || ""
+
+    payload = {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      username: user.username,
+      user_id: user.id,
+      avatar: user.avatar_template,
+      group: user.title
+    }
+
     payload_sha = Digest::SHA256.hexdigest payload.to_json
     hash_function = OpenSSL::Digest.new('sha256')
     hmac = OpenSSL::HMAC.hexdigest(hash_function, SiteSetting.cookie_ui_key, payload_sha)
@@ -43,7 +55,10 @@ class ExCurrentUserProvider < Auth::DefaultCurrentUserProvider
   end
 
   def user_data_hash(user)
-    Digest::MD5.hexdigest("#{user.email}#{user.username}#{user.avatar_template}#{user.title}")
+    firstname = user.custom_fields["first_name"] || ""
+    lastname = user.custom_fields["last_name"] || ""
+
+    Digest::MD5.hexdigest("#{user.firstname}#{user.lastname}#{user.email}#{user.username}#{user.avatar_template}#{user.title}")
   end
 
   def update_session_user_data(user, session)
@@ -51,7 +66,12 @@ class ExCurrentUserProvider < Auth::DefaultCurrentUserProvider
   end
 
   def update_auth_cookie!(user, cookie_jar)
+    firstname = user.custom_fields["first_name"] || ""
+    lastname = user.custom_fields["last_name"] || ""
+
     payload = {
+      firstname: user.firstname,
+      lastname: user.lastname,
       email: user.email,
       username: user.username,
       user_id: user.id,
